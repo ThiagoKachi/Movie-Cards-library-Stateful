@@ -27,8 +27,11 @@ class AddMovie extends React.Component {
     });
   }
 
-  resetState(onClick, state) {
-    onClick(state);
+  resetState(event) {
+    event.preventDefault();
+    
+    const { onClick } = this.props;
+    onClick(this.state);
     this.setState(() => ({
       title: '',
       subtitle: '',
@@ -40,7 +43,6 @@ class AddMovie extends React.Component {
   }
 
   render() {
-    const { onClick } = this.props;
     const { title, subtitle, imagePath, storyline, rating, genre } = this.state;
 
     return(
@@ -120,7 +122,7 @@ class AddMovie extends React.Component {
 
         <button 
           data-testid="send-button" 
-          onClick={ () => this.resetState(onClick, this.state) }
+          onClick={ this.resetState }
         >
           Adicionar filme
         </button>

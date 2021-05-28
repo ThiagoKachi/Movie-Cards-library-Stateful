@@ -1,4 +1,6 @@
 import React from 'react';
+import AddMovie from './AddMovie';
+import MovieList from './MovieList';
 import SearchBar from './SearchBar';
 
 class MovieLibrary extends React.Component {
@@ -35,17 +37,49 @@ class MovieLibrary extends React.Component {
     })
   }
 
+  searchForMovies(searchText, bookmarkedOnly, selectedGenre, movies) {
+    let searchByParameter = movies;
+    if (searchText !== '') {
+      searchByParameter = movies
+        .filter(({ title, subtitle, storyline }) => title.toLowerCase().includes(searchText)
+        || subtitle.toLowerCase().includes(searchText)
+        || storyline.toLowerCase().includes(searchText));
+    }
+    if (bookmarkedOnly) {
+      return searchByParameter
+        .filter(({ bookmarked }) => bookmarked);
+    }
+    if (selectedGenre !== '') {
+      return searchByParameter
+        .filter(({ genre }) => genre === selectedGenre);
+    }
+    return searchByParameter;
+  }
+
+  addMovie(newMovie, movies) {
+    this.setState({ movies: [...movies, newMovie] });
+  }
+
   render() {
-    const { searchText, bookmarkedOnly, selectedGenre } = this.state;
+    const { searchText, bookmarkedOnly, selectedGenre, movies } = this.state;
     return(
-      <SearchBar 
-        SearchBar={ searchText }
-        bookmarkedOnly={ bookmarkedOnly }
-        selectedGenre={ selectedGenre }
-        onSearchTextChange={ this.handleSearchText }
-        onBookmarkedChange={ this.handleBookmarkedOnly }
-        onSelectedGenreChange={ this.handleSelectedGenre }
-      />
+      <div>
+        <SearchBar 
+          SearchBar={ searchText }
+          bookmarkedOnly={ bookmarkedOnly }
+          selectedGenre={ selectedGenre }
+          onSearchTextChange={ this.handleSearchText }
+          onBookmarkedChange={ this.handleBookmarkedOnly }
+          onSelectedGenreChange={ this.handleSelectedGenre }
+        />
+        <MovieList movies={ this.searchForMovies(
+          searchText, bookmarkedOnly, selectedGenre, movies
+        ) }
+        />
+
+        <AddMovie onClick={ (newMovie) => this.addMovie(newMovie, movies) } />
+
+      </div>
     )
   }
 }
