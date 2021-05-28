@@ -5,6 +5,7 @@ class AddMovie extends React.Component {
     super();
 
     this.handleChange = this.handleChange.bind(this);
+    this.resetState = this.resetState.bind(this);
 
     this.state = {
       subtitle: '',
@@ -16,6 +17,7 @@ class AddMovie extends React.Component {
     }
   }
 
+
   handleChange({ target }) {
     const { name } = target;
     const value = target.type === 'checkbox' ? target.checked : target.value;
@@ -23,6 +25,18 @@ class AddMovie extends React.Component {
     this.setState({
       [name]: value,
     });
+  }
+
+  resetState(onClick, state) {
+    onClick(state);
+    this.setState(() => ({
+      title: '',
+      subtitle: '',
+      imagePath: '',
+      storyline: '',
+      rating: 0,
+      genre: 'action',
+    }));
   }
 
   render() {
@@ -103,6 +117,13 @@ class AddMovie extends React.Component {
             <option value="thriller" ata-testid="genre-option">Suspense</option>
           </select>
         </label>
+
+        <button 
+          data-testid="send-button" 
+          onClick={ () => this.resetState(onClick, this.state) }
+        >
+          Adicionar filme
+        </button>
       </form>
     )
   }
